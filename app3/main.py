@@ -11,6 +11,7 @@ from kivymd.app import MDApp
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.core.window import Window
+from kivy.uix.screenmanager import ScreenManager, Screen
 
 from kivymd.app import MDApp
 from kivymd.theming import ThemableBehavior
@@ -42,27 +43,22 @@ class DrawerList(ThemableBehavior, MDList):
                 break
         instance_item.text_color = self.theme_cls.primary_color
 
-class MainContainer(FloatLayout):        
-    pass
+class MainContainer(Screen):        
+	pass
 
-class Container(FloatLayout):
+class Container(Screen):
 	def __new__(secondContainer, *args, **kwargs):
 		return super().__new__(secondContainer)
 
 
-	def Start(self):
-		self.clear_widgets()
-		self.secondContainer=MainContainer()
-		self.add_widget(self.secondContainer)
-		icons_item = {
-		"0": "Пользователи",
-		"1": "Алихан Мирас",
-		"2": "Контакты"
-		}
+	def Start_(self):
+		App.root.current='menu'
 		
+		icons_item = {"0": "Пользователи",
+		"1": "Яруллин Ильдус",
+		"2": "Контакты"}
 		for icon_name in icons_item.keys():
-			self.secondContainer.content_drawer.ids.md_list.add_widget(ItemDrawer(text=icons_item[icon_name]))
-
+			App.root.current_screen.content_drawer.ids.md_list.add_widget(ItemDrawer(text=icons_item[icon_name]))	
 
 	def change_image(self,LR):
 		if LR=='R':
@@ -80,16 +76,13 @@ class Container(FloatLayout):
 			else:
 				self.arrow_left.size_hint=0.05,0.05
 				self.arrow_rigth.size_hint=0.05,0.05
-
-
-
+class sm(ScreenManager):	
+	pass
 
 class MyApp(MDApp):
-	def __new__(Container_, *args, **kwargs):
-		return super().__new__(Container_)
 	def build(self):
-		self.Container_=Container()
-		return self.Container_
+		return sm()
 
 if __name__ == '__main__':
-	MyApp().run()
+	App=MyApp()
+	App.run()
